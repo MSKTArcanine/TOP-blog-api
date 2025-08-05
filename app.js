@@ -7,9 +7,9 @@ auth.setupLocalStrategy();
 const app = express();
 
 app.use(passport.initialize());
-
+const PORT = process.env.PORT ||3000;
 
 app.get('/', (req, res) => res.json({message: 'homepage'}));
 app.use('/api/v1/blog/', blogRouter);
 
-app.listen(port, () => console.log(`Example app listening on port ${process.env.PORT}!`));
+app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`));
