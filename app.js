@@ -12,5 +12,4 @@ app.use(passport.initialize());
 app.get('/', (req, res) => res.json({message: 'homepage'}));
 app.use('/api/v1/blog/', blogRouter);
 
-const port = 3000;
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`Example app listening on port ${process.env.PORT}!`));
