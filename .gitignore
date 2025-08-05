@@ -5,6 +5,8 @@ node_modules
 
 /prisma/generated/prisma
 
+/generated
+
 /generated/prisma
 =======
 # Logs
