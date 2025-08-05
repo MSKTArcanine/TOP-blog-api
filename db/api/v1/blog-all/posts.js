@@ -29,4 +29,6 @@ const addCommentOnPostId = async (id, comment) => {
     }
 }
 
-module.exports = {getAllPosts, addCommentOnPostId};
+const getPostById = async (id) => await prisma.posts.findUnique({where:{id}})
+
+module.exports = {getAllPosts, addCommentOnPostId, getPostById};
