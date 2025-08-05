@@ -1,8 +1,9 @@
 const prisma = require('./connection');
+const bcrypt = require('bcryptjs');
 
 const createUser = async (username, hashedPassword, is_author = false) => {
     try {
-        await prisma.user.create({
+        await prisma.users.create({
             data:{
                 username,
                 hashedPassword,
@@ -14,4 +15,34 @@ const createUser = async (username, hashedPassword, is_author = false) => {
     }
 }
 
-module.exports = {createUser}
+const getUserByUsername = async (username) => {
+    try {
+        await prisma.users.findUnique({
+            where:{username}
+        })
+    }catch(error){
+        console.error(error);
+    }
+}
+
+const insertRefreshToken = async (token, user_id) => {
+    const hashed_token = await bcrypt.hash(token, 10);
+    await prisma.refreshTokens.create({
+        data:{
+            hashed_token,
+            user_id,
+        }
+    })
+}
+
+const getRefreshToken = async (user_id) => {   
+        const hashed_token = await prisma.refreshTokens.findUnique({
+            where:{
+                user_id
+            },
+            select:{
+                hashed_token:true,
+            }
+        });
+}
+module.exports = {createUser, getUserByUsername, insertRefreshToken, getRefreshToken}
