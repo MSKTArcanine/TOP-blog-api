@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id Int @id @default(autoincrement())
+  username String @unique
+  hashed_password String
+  is_author Boolean @default(false)
+  posts Posts[]
+  comments Comments[]
+  refreshToken RefreshTokens[]
+}
+
+model Posts {
+  id Int @id @default(autoincrement())
+  title String
+  desc String?
+  content String
+  is_published Boolean @default(false)
+  author Users @relation(fields: [author_id], references: [id])
+  author_id Int
+  createdAt DateTime @default(now())
+  comments Comments[]
+}
+
+model Comments {
+  id Int @id @default(autoincrement())
+  content String
+  comment_author Users @relation(fields: [comment_author_id], references: [id])
+  comment_author_id Int
+  post Posts @relation(fields: [post_id], references: [id])
+  post_id Int
+  createdAt DateTime @default(now())
+}
+
+model RefreshTokens {
+  id String @id @default(uuid()) @unique
+  hashed_token String @unique
+  user Users @relation(fields: [user_id], references: [id])
+  user_id Int
+  createdAt DateTime @default(now())
+  expireAt DateTime
+}
