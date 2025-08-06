@@ -59,13 +59,14 @@ const verifyAccessToken = (req, res, next) => {
     console.log(accesstoken);
     try{
         const payload = jwt.verify(accesstoken, "secret");
+        req.user.id = payload.sub;
         console.log('Token valide, next()');
         res.json({message:"Tout bon"});
         // ICI C EST UN NEXT.
     }catch(err){
         console.log('Token invalide, redirection');
         res.redirect('/api/auth/refresh');
-        // FAUT FINIR LA ROUTE.
+        // Faut pas finir la route en fait. C'est le client qui gère la redirection en API.
     }
 }
 
