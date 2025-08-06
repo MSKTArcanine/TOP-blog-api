@@ -2,6 +2,7 @@ const dbAuth = require('../db/auth/auth');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const setupLocalStrategy = () => {
     passport.use(new LocalStrategy( async (username, password, done) => {
@@ -12,4 +13,31 @@ const setupLocalStrategy = () => {
 }))
 }
 
-module.exports = {setupLocalStrategy}
+const loginMW = (req, res, next) => {
+    passport.authenticate('local', {session: false}, async (err, user, info) => {
+        if(err) return next(err);
+        if(!user) return res.status(401).json({message: info?.message || "Login failed" });
+
+        console.log('Success login');
+
+        const access_token = jwt.sign({sub: user.id}, 'secret', {expiresIn: "15m"});
+        const refresh_token = jwt.sign({sub: user.id}, 'secret', {expiresIn: "1d"});
+        
+        console.log('Success token')
+
+        await dbAuth.insertRefreshToken(refresh_token, user.id);
+
+        console.log('Sucess DB insert');
+        
+        res.setHeader('Authorization', `Bearer ${access_token}`);
+        res.cookie('refreshToken', refresh_token, {
+            httpOnly: true,
+            secure: true,
+            path: '/auth/refresh-token',
+            maxAge: 1000 * 60 * 60 * 24 * 7
+        })
+        res.json({access_token});
+    })(req, res, next);
+}
+
+module.exports = {setupLocalStrategy, loginMW}

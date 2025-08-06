@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "arupgsql.postgres.database.azure.com",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "blogapi",
+            "database": "arupgsql",
+            "username": "arukanin",
+            "password": ":Du86@ja77*ma891281"
+        }
+    ]
+}
