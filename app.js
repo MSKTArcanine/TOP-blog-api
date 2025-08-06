@@ -6,6 +6,7 @@ const loginRouter = require('./Routes/authRouter');
 auth.setupLocalStrategy();
 
 const app = express();
+app.use(express.json());
 
 app.use(passport.initialize());
 const PORT = process.env.PORT ||3000;

@@ -3,9 +3,11 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const prisma = require('../db/auth/connection');
 
 const setupLocalStrategy = () => {
     passport.use(new LocalStrategy( async (username, password, done) => {
+    console.log('Strategy');
     const user = await dbAuth.getUserByUsername(username);
     if(!user) return done(null, false, {message: "Auth failed"});
     if(await bcrypt.compare(password, user.hashed_password)) return done(null, false, {message: "Auth failed"});
@@ -28,7 +30,7 @@ const loginMW = (req, res, next) => {
         await dbAuth.insertRefreshToken(refresh_token, user.id);
 
         console.log('Sucess DB insert');
-        
+
         res.setHeader('Authorization', `Bearer ${access_token}`);
         res.cookie('refreshToken', refresh_token, {
             httpOnly: true,
@@ -40,4 +42,11 @@ const loginMW = (req, res, next) => {
     })(req, res, next);
 }
 
-module.exports = {setupLocalStrategy, loginMW}
+const signupMW = async (req, res) => {
+    console.log('Create user')
+    const {username, password} = req.body;
+    await dbAuth.createUser(username, password);
+    res.json({message: "Done !"});
+}
+
+module.exports = {setupLocalStrategy, signupMW, loginMW}
