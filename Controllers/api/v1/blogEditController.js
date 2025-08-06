@@ -13,6 +13,7 @@ const getAllComments = async (req, res) => {
 const createPost = async (req, res) => {
     const data = req.body;
     await dbAuthor.createPost(req.user.id, data);
+    req.status(204).json({message:"Created"});
 }
 
 const getSinglePost = async (req, res) => {
