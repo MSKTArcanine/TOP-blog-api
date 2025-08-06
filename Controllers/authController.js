@@ -45,8 +45,11 @@ const loginMW = (req, res, next) => {
 const signupMW = async (req, res) => {
     console.log('Create user')
     const {username, password} = req.body;
-    await dbAuth.createUser(username, password);
-    res.json({message: "Done !"});
+    try{await dbAuth.createUser(username, password);
+    res.json({message: "Done !"});}
+    catch(err){
+        res.status(500).json({message:"Signup failed !"})
+    }
 }
 
 module.exports = {setupLocalStrategy, signupMW, loginMW}

@@ -12,7 +12,7 @@ const createUser = async (username, password, is_author = false) => {
             }
         })
     } catch (error) {
-        console.error(error);
+        throw error;   
     }
 }
 
