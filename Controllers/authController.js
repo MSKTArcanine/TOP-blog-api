@@ -23,7 +23,7 @@ const loginMW = (req, res, next) => {
 
         console.log('Success login');
 
-        const access_token = jwt.sign({sub: user.id}, 'secret', {expiresIn: "2m"});
+        const access_token = jwt.sign({sub: user.id}, 'secret', {expiresIn: "5m"});
         const refresh_token = jwt.sign({sub: user.id}, 'secret', {expiresIn: "1d"});
         
         console.log('Success token')
