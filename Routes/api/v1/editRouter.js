@@ -12,7 +12,7 @@ editRouter.get('/comments', verifyAccessToken, authorController.getAllComments) 
 
 // POSTS
 
-editRouter.post('/post/:postid', verifyAccessToken, authorController.createPost) // C
+editRouter.post('/post', verifyAccessToken, authorController.createPost) // C
 editRouter.get('/post/:postid', verifyAccessToken, authorController.getSinglePost) // R GET ONE POST FROM THAT USER => Need req.user.id + req.params.id
 editRouter.put('/post/:postid', verifyAccessToken, authorController.updatePost) // U
 editRouter.delete('/post/:postid', verifyAccessToken, authorController.deletePost) // D
