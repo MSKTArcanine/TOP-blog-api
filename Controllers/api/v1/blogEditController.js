@@ -10,6 +10,11 @@ const getAllComments = async (req, res) => {
     res.status(200).json({comments:comments});
 }
 
+const createPost = async (req, res) => {
+    const data = req.body;
+    await dbAuthor.createPost(req.user.id, data);
+}
+
 const getSinglePost = async (req, res) => {
     const post = await dbAuthor.getSinglePostById(req.user.id, req.params.postid);
     res.status(200).json({post:post});
@@ -47,13 +52,14 @@ const deleteAllCommentsFromPost = async (req, res) => {
 }
 
 module.exports = {
-getAllPosts,
-getAllComments,
-getSinglePost,
-updatePost,
-deletePost,
-deleteAllPosts,
-getAllCommentsFromPost,
-deleteCommentFromPost,
-deleteAllCommentsFromPost,
+    createPost,
+    getAllPosts,
+    getAllComments,
+    getSinglePost,
+    updatePost,
+    deletePost,
+    deleteAllPosts,
+    getAllCommentsFromPost,
+    deleteCommentFromPost,
+    deleteAllCommentsFromPost,
 }

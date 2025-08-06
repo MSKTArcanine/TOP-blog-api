@@ -61,8 +61,7 @@ const verifyAccessToken = (req, res, next) => {
         const payload = jwt.verify(accesstoken, "secret");
         req.user.id = payload.sub;
         console.log('Token valide, next()');
-        res.json({message:"Tout bon"});
-        // ICI C EST UN NEXT.
+        next();
     }catch(err){
         console.log('Token invalide, redirection');
         res.redirect('/api/auth/refresh');
