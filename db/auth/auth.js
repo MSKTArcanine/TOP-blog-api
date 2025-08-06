@@ -18,9 +18,10 @@ const createUser = async (username, password, is_author = false) => {
 
 const getUserByUsername = async (username) => {
     try {
-        await prisma.users.findUnique({
+        const user = await prisma.users.findUnique({
             where:{username}
         })
+        return user;
     }catch(error){
         console.error(error);
     }
@@ -28,16 +29,18 @@ const getUserByUsername = async (username) => {
 
 const insertRefreshToken = async (token, user_id) => {
     const hashed_token = await bcrypt.hash(token, 10);
+    const expireAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
     await prisma.refreshTokens.create({
         data:{
             hashed_token,
             user_id,
+            expireAt,
         }
     })
 }
 
 const getRefreshToken = async (user_id) => {   
-        const hashed_token = await prisma.refreshTokens.findUnique({
+        const hashed_token = await prisma.refreshTokens.findFirst({
             where:{
                 user_id
             },
@@ -45,5 +48,6 @@ const getRefreshToken = async (user_id) => {
                 hashed_token:true,
             }
         });
+        return hashed_token;
 }
 module.exports = {createUser, getUserByUsername, insertRefreshToken, getRefreshToken}

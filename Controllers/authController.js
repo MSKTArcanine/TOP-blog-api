@@ -7,10 +7,11 @@ const prisma = require('../db/auth/connection');
 
 const setupLocalStrategy = () => {
     passport.use(new LocalStrategy( async (username, password, done) => {
-    console.log('Strategy');
+    console.log('Strategy', `username : ${username}, password : ${password}`);
     const user = await dbAuth.getUserByUsername(username);
+    console.log(`user : ${user.username}, ${user.hashed_password}`)
     if(!user) return done(null, false, {message: "Auth failed"});
-    if(await bcrypt.compare(password, user.hashed_password)) return done(null, false, {message: "Auth failed"});
+    if(!(await bcrypt.compare(password, user.hashed_password))) return done(null, false, {message: "Auth failed"});
     return done(null, user);
 }))
 }
@@ -22,7 +23,7 @@ const loginMW = (req, res, next) => {
 
         console.log('Success login');
 
-        const access_token = jwt.sign({sub: user.id}, 'secret', {expiresIn: "15m"});
+        const access_token = jwt.sign({sub: user.id}, 'secret', {expiresIn: "2m"});
         const refresh_token = jwt.sign({sub: user.id}, 'secret', {expiresIn: "1d"});
         
         console.log('Success token')
@@ -35,7 +36,7 @@ const loginMW = (req, res, next) => {
         res.cookie('refreshToken', refresh_token, {
             httpOnly: true,
             secure: true,
-            path: '/auth/refresh-token',
+            path: '/api/auth/refresh',
             maxAge: 1000 * 60 * 60 * 24 * 7
         })
         res.json({access_token});
@@ -52,4 +53,38 @@ const signupMW = async (req, res) => {
     }
 }
 
-module.exports = {setupLocalStrategy, signupMW, loginMW}
+const verifyAccessToken = (req, res, next) => {
+    console.log('Verification du token');
+    const accesstoken = req.header('Authorization').split(' ')[1];
+    console.log(accesstoken);
+    try{
+        const payload = jwt.verify(accesstoken, "secret");
+        console.log('Token valide, next()');
+        res.json({message:"Tout bon"});
+        // ICI C EST UN NEXT.
+    }catch(err){
+        console.log('Token invalide, redirection');
+        res.redirect('/api/auth/refresh');
+        // FAUT FINIR LA ROUTE.
+    }
+}
+
+const refreshToken = async (req, res) => {
+    console.log('Refreshing token...');
+    const refreshToken = req.cookies.refreshToken;
+    console.log('Cookie : ', refreshToken);
+    try{
+        const userid = jwt.verify(refreshToken, "secret");
+        const dbResult = await dbAuth.getRefreshToken(userid.sub);
+        if(!await bcrypt.compare(refreshToken, dbResult.hashed_token))
+            return res.status(403).json('RefreshToken falsifié');
+        const access_token = jwt.sign({sub: userid.sub}, "secret", {
+            expiresIn: "5m"
+        });
+        res.json({message:"Renouvellement :", access_token: access_token});
+    }catch(err){
+        console.error(err);
+        res.status(401).json({err:err});
+    }
+}
+module.exports = {setupLocalStrategy, signupMW, loginMW, verifyAccessToken, refreshToken}
