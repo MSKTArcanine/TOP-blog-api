@@ -48,7 +48,7 @@ const signupMW = async (req, res) => {
     try{await dbAuth.createUser(username, password);
     res.json({message: "Done !"});}
     catch(err){
-        res.status(500).json({message:"Signup failed !"})
+        res.status(400).json({message:"Signup failed !"})
     }
 }
 
