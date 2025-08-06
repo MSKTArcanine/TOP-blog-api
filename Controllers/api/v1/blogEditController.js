@@ -16,18 +16,18 @@ const createPost = async (req, res) => {
 }
 
 const getSinglePost = async (req, res) => {
-    const post = await dbAuthor.getSinglePostById(req.user.id, req.params.postid);
+    const post = await dbAuthor.getSinglePostById(req.user.id, Number(req.params.postid));
     res.status(200).json({post:post});
 }
 
 const updatePost = async (req, res) => {
     const data = req.body;
-    await dbAuthor.updatePostById(req.user.id, req.params.postid, data);
+    await dbAuthor.updatePostById(req.user.id, Number(req.params.postid), data);
     res.status(204).json({message: "Updated"});
 }
 
 const deletePost = async (req, res) => {
-    await dbAuthor.deletePostById(req.user.id, req.params.postid);
+    await dbAuthor.deletePostById(req.user.id, Number(req.params.postid));
     res.status(204).json({message: "Deleted"});
 }
 
@@ -37,17 +37,17 @@ const deleteAllPosts = async (req, res) => {
 }
 
 const getAllCommentsFromPost = async (req, res) => {
-    const comments = await dbAuthor.getCommentsByPostId(req.user.id, req.params.postid);
+    const comments = await dbAuthor.getCommentsByPostId(req.user.id, Number(req.params.postid));
     res.status(200).json({comments: comments});
 }
 
 const deleteCommentFromPost = async (req, res) => {
-    await dbAuthor.deleteCommentByPostIdAndCommentId(req.user.id, req.params.postid, req.params.commentid);
+    await dbAuthor.deleteCommentByPostIdAndCommentId(req.user.id, Number(req.params.postid), Number(req.params.commentid));
     res.status(204).json({message: "Deleted"});
 }
 
 const deleteAllCommentsFromPost = async (req, res) => {
-    await dbAuthor.deleteAllCommentsFromPostById(req.user.id, req.params.postid);
+    await dbAuthor.deleteAllCommentsFromPostById(req.user.id, Number(req.params.postid));
     res.status(204).json({message: "Deleted all"});
 }
 

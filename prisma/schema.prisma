@@ -30,7 +30,7 @@ model Posts {
   desc String?
   content String
   is_published Boolean @default(false)
-  author Users @relation(fields: [author_id], references: [id])
+  author Users @relation(fields: [author_id], references: [id], onDelete: Cascade)
   author_id Int
   createdAt DateTime @default(now())
   comments Comments[]
@@ -39,9 +39,9 @@ model Posts {
 model Comments {
   id Int @id @default(autoincrement())
   content String
-  comment_author Users @relation(fields: [comment_author_id], references: [id])
+  comment_author Users @relation(fields: [comment_author_id], references: [id], onDelete: Cascade)
   comment_author_id Int
-  post Posts @relation(fields: [post_id], references: [id])
+  post Posts @relation(fields: [post_id], references: [id], onDelete: Cascade)
   post_id Int
   createdAt DateTime @default(now())
 }
@@ -49,7 +49,7 @@ model Comments {
 model RefreshTokens {
   id String @id @default(uuid()) @unique
   hashed_token String @unique
-  user Users @relation(fields: [user_id], references: [id])
+  user Users @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id Int
   createdAt DateTime @default(now())
   expireAt DateTime

@@ -6,6 +6,7 @@ const editRouter = Router();
 
 // PAGE LOAD
 
+editRouter.get('/', (req, res) => res.status(200).json({message:'test'}));
 editRouter.get('/posts', verifyAccessToken, authorController.getAllPosts) // GET ALL POSTS FROM THAT USER => Need req.user.id
 editRouter.get('/comments', verifyAccessToken, authorController.getAllComments) // GET ALL COMMENTS FROM ALL POSTS (modération) => Need req.user.id
 
