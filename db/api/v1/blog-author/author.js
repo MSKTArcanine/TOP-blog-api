@@ -17,7 +17,7 @@ const getAllCommentsById = async (author_id) => await prisma.comments.findMany({
 // POSTS
 
 const createPost = async (author_id, data) => {
-    const post = {title: data.title, author_id: data.author_id, desc: data.desc, content: data.content, is_published: data.is_published};
+    const post = {title: data.title, author_id: author_id, desc: data.desc, content: data.content, is_published: data.is_published};
     await prisma.posts.create({
     data:{
         ...post,
