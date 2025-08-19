@@ -3,7 +3,7 @@ const comments = require('../../../db/api/v1/blog-all/comments');
 
 const getAllPosts = async (req, res) => {
     const result = await posts.getAllPosts();
-    res.json({posts: result, username: req?.user?.username});
+    res.json({posts: result, username: req.user.username || null});
 }
 
 const getPostById = async (req, res) => {
