@@ -18,7 +18,6 @@ const setupLocalStrategy = () => {
 
 const loginMW = (req, res, next) => {
     passport.authenticate('local', {session: false}, async (err, user, info) => {
-        console.log("Recu : ", user.username, user.password);
         if(err) return next(err);
         if(!user) return res.status(401).json({message: info?.message || "Login failed" });
 
