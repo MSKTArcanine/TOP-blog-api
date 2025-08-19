@@ -14,7 +14,7 @@ app.use(passport.initialize());
 const PORT = process.env.PORT ||3000;
 
 const corsOptions = {
-    origin:'https://blog-api-dqc2a0ftfra7akc5.francecentral-01.azurewebsites.net/',
+    origin:'http://127.0.0.1:5173',
     optionsSuccessStatus: 200,
 }
 
