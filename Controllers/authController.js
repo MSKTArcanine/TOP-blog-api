@@ -23,7 +23,7 @@ const loginMW = (req, res, next) => {
 
         console.log('Success login');
 
-        const access_token = jwt.sign({sub: user.id}, 'secret', {expiresIn: "5m"});
+        const access_token = jwt.sign({sub: user.id, username: user.username}, 'secret', {expiresIn: "5m"});
         const refresh_token = jwt.sign({sub: user.id}, 'secret', {expiresIn: "1d"});
         
         console.log('Success token')
@@ -62,6 +62,7 @@ const verifyAccessToken = (req, res, next) => {
         console.log("PAYLOAD : ", payload.sub);
         req.user = {};
         req.user.id = payload.sub;
+        req.user.username = payload.username;
         console.log('Token valide, next()');
         return next();
     }catch(err){
@@ -81,7 +82,7 @@ const refreshToken = async (req, res) => {
         if(!await bcrypt.compare(refreshToken, dbResult.hashed_token))
             return res.status(403).json('RefreshToken falsifié');
         const access_token = jwt.sign({sub: userid.sub}, "secret", {
-            expiresIn: "5m"
+            expiresIn: "15m"
         });
         res.json({message:"Renouvellement :", access_token: access_token});
     }catch(err){
