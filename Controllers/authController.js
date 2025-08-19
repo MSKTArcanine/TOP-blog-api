@@ -33,6 +33,7 @@ const loginMW = (req, res, next) => {
         console.log('Sucess DB insert');
 
         res.setHeader('Authorization', `Bearer ${access_token}`);
+        res.setHeader("Access-Control-Expose-Headers", "Authorization");
         res.cookie('refreshToken', refresh_token, {
             httpOnly: true,
             secure: true,
