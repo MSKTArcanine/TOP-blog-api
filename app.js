@@ -16,6 +16,7 @@ const PORT = process.env.PORT ||3000;
 const corsOptions = {
     origin:['https://blog-api-dqc2a0ftfra7akc5.francecentral-01.azurewebsites.net/', 'http://127.0.0.1:5173'],
     optionsSuccessStatus: 200,
+    exposeHeaders:["Authorization"],
 }
 
 app.get('/', (req, res) => res.json({message: 'homepage'}));
