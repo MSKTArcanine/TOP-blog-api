@@ -4,6 +4,7 @@ const passport = require('passport');
 const auth = require('./Controllers/authController');
 const loginRouter = require('./Routes/authRouter');
 const editRouter = require('./Routes/api/v1/editRouter');
+const cors = require('cors');
 auth.setupLocalStrategy();
 
 const app = express();
@@ -12,9 +13,14 @@ app.use(express.json());
 app.use(passport.initialize());
 const PORT = process.env.PORT ||3000;
 
+const corsOptions = {
+    origin:'https://blog-api-dqc2a0ftfra7akc5.francecentral-01.azurewebsites.net/',
+    optionsSuccessStatus: 200,
+}
+
 app.get('/', (req, res) => res.json({message: 'homepage'}));
-app.use('/api/v1/blog/', blogRouter);
-app.use('/api/auth', loginRouter);
-app.use('/api/v1/edit', editRouter);
+app.use('/api/v1/blog/', cors(corsOptions), blogRouter);
+app.use('/api/auth', cors(corsOptions), loginRouter);
+app.use('/api/v1/edit', cors(corsOptions), editRouter);
 
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`));
