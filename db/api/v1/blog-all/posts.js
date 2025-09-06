@@ -13,6 +13,9 @@ const getAllPosts = async () => await prisma.posts.findMany({
         },
         is_published: true,
         createdAt: true
+    },
+    where:{
+        is_published:true,
     }
 });
 
