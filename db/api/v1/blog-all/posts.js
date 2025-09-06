@@ -2,6 +2,7 @@ const prisma = require('../../../auth/connection');
 
 const getAllPosts = async () => await prisma.posts.findMany({
     select:{
+        id:true,
         title: true,
         desc: true,
         content: true,
