@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 
 app.use(passport.initialize());
-const PORT = process.env.PORT ||3000;
+const PORT = process.env.PORT ||3001;
 
 const corsOptions = {
     origin:['https://blog-api-dqc2a0ftfra7akc5.francecentral-01.azurewebsites.net/', 'http://127.0.0.1:5173'],
