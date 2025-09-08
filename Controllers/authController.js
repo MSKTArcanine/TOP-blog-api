@@ -36,7 +36,7 @@ const loginMW = (req, res, next) => {
         res.setHeader("Access-Control-Expose-Headers", "Authorization");
         res.cookie('refreshToken', refresh_token, {
             httpOnly: true,
-            secure: true,
+            secure: false, // A REMETTRE EN PROD
             path: '/api/auth/refresh',
             maxAge: 1000 * 60 * 60 * 24 * 7
         })
