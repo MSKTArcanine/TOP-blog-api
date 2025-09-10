@@ -1,9 +1,14 @@
 const dbAuthor = require('../../../db/api/v1/blog-author/author');
 
 const getAllPosts = async (req, res) => {
-    const posts = await dbAuthor.getAllPostsById(req.user.id);
-    res.status(200).json({posts:posts});
-}
+    try {
+        const posts = await dbAuthor.getAllPostsById(req.user.id);
+        res.status(200).json({ posts });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ posts: [], message: 'Server error fetching posts' });
+    }
+};
 
 const getAllComments = async (req, res) => {
     const comments = await dbAuthor.getAllCommentsById(req.user.id);
