@@ -5,7 +5,11 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "echo \"No test :3\""
+    "test": "echo \"No test :3\"",
+    "prisma:gen:blog": "prisma generate --schema prisma/blog/schema.prisma",
+    "prisma:gen:shop": "prisma generate --schema prisma/shop/schema.prisma",
+    "prisma:gen": "npm run prisma:gen:blog && npm run prisma:gen:shop",
+    "prestart": "npm run prisma:gen"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +25,6 @@
     "nodemon": "^3.1.10",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
-    "prisma": "^6.13.0"
+    "prisma": "^6.16.3"
   }
 }
