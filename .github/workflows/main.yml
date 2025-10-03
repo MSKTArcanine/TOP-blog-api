@@ -24,18 +24,11 @@ jobs:
         run: npm ci
 
       # ⬇️ NOUVELLE ÉTAPE : forcer le moteur binaire et générer les 2 clients
-      - name: Generate Prisma clients (binary engine)
-        env:
-          PRISMA_CLI_QUERY_ENGINE_TYPE: binary
-          PRISMA_CLIENT_ENGINE_TYPE: binary
+      - name: Generate Prisma clients (blog + shop)
         run: |
           npm run prisma:gen:blog
           npm run prisma:gen:shop
-
-      # (Optionnel) build si tu as un transpile TS, sinon enlève
-      - name: Build
-        run: npm run build --if-present
-
+          
       # ⬇️ NOUVELLE ÉTAPE : créer un zip prêt à déployer (inclut node_modules + generated)
       - name: Create deployable zip
         run: |
