@@ -1,0 +1,40 @@
+name: Deploy Blog API
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 22 (match Azure)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+
+      - name: Install deps (incl. dev)
+        run: npm ci
+
+      - name: Generate Prisma clients (blog + shop)
+        run: |
+          npm run prisma:gen:blog
+          npm run prisma:gen:shop
+
+      - name: Create deployable zip (includes node_modules & generated)
+        run: |
+          mkdir -p dist
+          zip -r dist/app.zip . \
+            -x ".git/*" ".github/*" "dist/*" "tests/*" "coverage/*"
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: blog-api                  # <-- ton nom d’app
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: dist/app.zip
