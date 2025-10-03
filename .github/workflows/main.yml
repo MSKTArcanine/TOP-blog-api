@@ -1,0 +1,70 @@
+name: Deploy Blog API
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 22 (match Azure)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Generate Prisma clients (blog + shop)
+        run: |
+          npm run prisma:gen:blog
+          npm run prisma:gen:shop
+
+      - name: Create deployable zip (includes node_modules & generated)
+        run: |
+          mkdir -p dist
+          zip -r dist/app.zip . \
+            -x ".git/*" ".github/*" "dist/*" "tests/*" "coverage/*"
+
+      - name: Upload zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-zip
+          path: dist/app.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: deploy-zip
+          path: dist
+
+      - name: Azure login (federated creds)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_27FE99FAF3EB4C418B24D71B257E08BE }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D6081FA6AE484F68AADB49B9149A21E6 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8B82FA92A92C4726BDADF77C734C1D3F }}
+
+      - name: Deploy zip to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: blog-api
+          slot-name: Production
+          package: dist/app.zip
