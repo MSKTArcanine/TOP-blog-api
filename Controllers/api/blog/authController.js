@@ -1,4 +1,4 @@
-const dbAuth = require('../db/auth/auth');
+const dbAuth = require('../../../db/auth/auth');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
