@@ -3,7 +3,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const prisma = require('../db/auth/connection');
+const prisma = require('../../../db/auth/connection');
 
 const setupLocalStrategy = () => {
     passport.use(new LocalStrategy( async (username, password, done) => {
