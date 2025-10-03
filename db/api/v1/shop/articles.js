@@ -1,4 +1,4 @@
-import { prismaShop } from "../../../auth/connectionShop"
+const prismaShop = require('../../../auth/connectionShop');
 
 const getAllArticles = async () => {
     const res = await prismaShop.items.findMany();
