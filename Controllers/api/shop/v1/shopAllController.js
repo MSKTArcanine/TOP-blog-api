@@ -1,8 +1,8 @@
 const articles = require('../../../../db/api/v1/shop/articles');
 
 export const getAllArticles = async (req, res) => {
-    const res = await articles.getAllArticles();
-    res.json(res);
+    const resultat = await articles.getAllArticles();
+    res.json(resultat);
 }
 
 module.exports = {getAllArticles}
