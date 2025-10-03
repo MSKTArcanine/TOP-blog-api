@@ -6,10 +6,9 @@
   "scripts": {
     "start": "node app.js",
     "test": "echo \"No test :3\"",
-    "prisma:gen:blog": "node ./node_modules/prisma/build/index.js generate --schema prisma/blog/schema.prisma",
-    "prisma:gen:shop": "node ./node_modules/prisma/build/index.js --schema prisma/shop/schema.prisma",
-    "prisma:gen": "npm run prisma:gen:blog && npm run prisma:gen:shop",
-    "prestart": "npm run prisma:gen"
+    "prisma:gen:blog": "npx prisma generate --schema prisma/blog/schema.prisma",
+    "prisma:gen:shop": "npx prisma generate --schema prisma/shop/schema.prisma",
+    "prisma:gen": "npm run prisma:gen:blog && npm run prisma:gen:shop"
   },
   "keywords": [],
   "author": "",
