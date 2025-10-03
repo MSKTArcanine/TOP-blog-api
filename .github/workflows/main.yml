@@ -1,4 +1,4 @@
-name: Deploy Blog API
+name: Build and deploy Node.js app to Azure Web App - blog-api
 
 on:
   push:
@@ -12,33 +12,42 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Use Node 22 (match Azure)
-        uses: actions/setup-node@v4
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
         with:
           node-version: '22.x'
           cache: 'npm'
 
-      - name: Install deps
+      - name: npm install
         run: npm ci
 
-      - name: Generate Prisma clients (blog + shop)
+      # ⬇️ NOUVELLE ÉTAPE : forcer le moteur binaire et générer les 2 clients
+      - name: Generate Prisma clients (binary engine)
+        env:
+          PRISMA_CLI_QUERY_ENGINE_TYPE: binary
+          PRISMA_CLIENT_ENGINE_TYPE: binary
         run: |
           npm run prisma:gen:blog
           npm run prisma:gen:shop
 
-      - name: Create deployable zip (includes node_modules & generated)
+      # (Optionnel) build si tu as un transpile TS, sinon enlève
+      - name: Build
+        run: npm run build --if-present
+
+      # ⬇️ NOUVELLE ÉTAPE : créer un zip prêt à déployer (inclut node_modules + generated)
+      - name: Create deployable zip
         run: |
           mkdir -p dist
           zip -r dist/app.zip . \
             -x ".git/*" ".github/*" "dist/*" "tests/*" "coverage/*"
 
-      - name: Upload zip artifact
+      # ⬇️ change l’artefact : on n’upload plus “.” mais le zip
+      - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: deploy-zip
+          name: node-app-zip
           path: dist/app.zip
 
   deploy:
@@ -49,22 +58,22 @@ jobs:
       contents: read
 
     steps:
-      - name: Download build artifact
+      - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: deploy-zip
+          name: node-app-zip
           path: dist
 
-      - name: Azure login (federated creds)
+      - name: Login to Azure
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_27FE99FAF3EB4C418B24D71B257E08BE }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D6081FA6AE484F68AADB49B9149A21E6 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8B82FA92A92C4726BDADF77C734C1D3F }}
 
-      - name: Deploy zip to Azure Web App
+      - name: Deploy to Azure Web App (zip)
         uses: azure/webapps-deploy@v3
         with:
-          app-name: blog-api
-          slot-name: Production
+          app-name: 'blog-api'
+          slot-name: 'Production'
           package: dist/app.zip
