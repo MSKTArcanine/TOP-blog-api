@@ -1,5 +1,5 @@
-const authorController = require('../../../Controllers/api/v1/blogEditController');
-const { verifyAccessToken } = require('../../../Controllers/authController');
+const authorController = require('../../../../Controllers/api/blog/v1/blogEditController');
+const { verifyAccessToken } = require('../../../../Controllers/api/blog/authController');
 const Router = require('express').Router;
 
 const editRouter = Router();

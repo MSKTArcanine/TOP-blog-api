@@ -1,4 +1,4 @@
-const dbAuthor = require('../../../db/api/v1/blog-author/author');
+const dbAuthor = require('../../../../db/api/v1/blog-author/author');
 
 const getAllPosts = async (req, res) => {
     try {

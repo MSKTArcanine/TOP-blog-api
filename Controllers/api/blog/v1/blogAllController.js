@@ -1,5 +1,5 @@
-const posts = require('../../../db/api/v1/blog-all/posts');
-const comments = require('../../../db/api/v1/blog-all/comments');
+const posts = require('../../../../db/api/v1/blog-all/posts');
+const comments = require('../../../../db/api/v1/blog-all/comments');
 
 const getAllPosts = async (req, res) => {
     const result = await posts.getAllPosts();

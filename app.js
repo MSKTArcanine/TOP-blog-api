@@ -1,9 +1,9 @@
 const express = require('express');
-const blogRouter = require('./Routes/api/v1/blogRouter');
+const blogRouter = require('./Routes/api/blog/v1/blogRouter');
 const passport = require('passport');
-const auth = require('./Controllers/authController');
-const loginRouter = require('./Routes/authRouter');
-const editRouter = require('./Routes/api/v1/editRouter');
+const auth = require('./Controllers/api/blog/authController');
+const loginRouter = require('./Routes/blogAuthRouter');
+const editRouter = require('./Routes/api/blog/v1/editRouter');
 const cors = require('cors');
 auth.setupLocalStrategy();
 
