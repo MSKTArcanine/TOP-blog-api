@@ -19,9 +19,13 @@ const corsOptions = {
     exposeHeaders:["Authorization"],
 }
 
+// BLOG ROUTER :
+
 app.get('/', (req, res) => res.json({message: 'homepage'}));
 app.use('/api/v1/blog/', cors(corsOptions), blogRouter);
 app.use('/api/auth', cors(corsOptions), loginRouter);
 app.use('/api/v1/edit', cors(corsOptions), editRouter);
+
+// SHOPWARS ROUTER :
 
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`));
